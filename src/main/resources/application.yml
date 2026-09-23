@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: rutaexpress-bff
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AZURE_ISSUER_URI:}
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      server:
+        webflux:
+          routes:
+            - id: auth
+              uri: ${SERVICES_AUTH_URL:http://localhost:8088}
+              predicates:
+                - Path=/api/auth/**
+            - id: shipments
+              uri: ${SERVICES_SHIPMENTS_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/shipments/**
+            - id: catalog
+              uri: ${SERVICES_CATALOG_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/catalog/**
+            - id: notifications
+              uri: ${SERVICES_NOTIFICATIONS_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/notifications/**
+            - id: audit
+              uri: ${SERVICES_AUDIT_URL:http://localhost:8084}
+              predicates:
+                - Path=/api/audit/**
+            - id: reports
+              uri: ${SERVICES_REPORTS_URL:http://localhost:8085}
+              predicates:
+                - Path=/api/reports/**
+            - id: rabbitmq-admin
+              uri: ${SERVICES_RABBITMQ_ADMIN_URL:http://localhost:8086}
+              predicates:
+                - Path=/api/rabbitmq/**
+            - id: kafka-admin
+              uri: ${SERVICES_KAFKA_ADMIN_URL:http://localhost:8087}
+              predicates:
+                - Path=/api/kafka/**
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
