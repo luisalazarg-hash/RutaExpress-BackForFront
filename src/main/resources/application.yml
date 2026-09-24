@@ -12,11 +12,34 @@ spring:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       server:
         webflux:
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowedOrigins:
+                  - http://localhost:5173
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders:
+                  - '*'
+                allowCredentials: true
           routes:
             - id: auth
               uri: ${SERVICES_AUTH_URL:http://localhost:8088}
               predicates:
                 - Path=/api/auth/**
+              filters:
+                - RemoveResponseHeader=Access-Control-Allow-Origin
+                - RemoveResponseHeader=Access-Control-Allow-Credentials
+            - id: users
+              uri: ${SERVICES_AUTH_URL:http://localhost:8088}
+              predicates:
+                - Path=/api/usuarios/**
               filters:
                 - RemoveResponseHeader=Access-Control-Allow-Origin
                 - RemoveResponseHeader=Access-Control-Allow-Credentials
