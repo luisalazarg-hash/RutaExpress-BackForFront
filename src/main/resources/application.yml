@@ -5,7 +5,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AZURE_ISSUER_URI:}
+          issuer-uri: https://login.microsoftonline.com/1688db59-391c-4dfa-ab90-a583e5576358/v2.0
+          audiences:
+            - da6d1bfd-6a07-4f5f-a6f3-85ebb2785519
   cloud:
     gateway:
       default-filters:
